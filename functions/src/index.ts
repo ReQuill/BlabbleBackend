@@ -15,7 +15,7 @@ setGlobalOptions({
 async function createBubble(userId: string, topics: string[]): Promise<string> {
     const lobbyDbRef = admin.database().ref("lobby");
 
-    await admin.database().ref().child("lobby").child(userId).set(topics);
+    await lobbyDbRef.child(userId).set(topics);
 
     const pendingMatchOffers: any[] = [];
 
@@ -45,6 +45,7 @@ async function createBubble(userId: string, topics: string[]): Promise<string> {
     if (result) {
         const bubble = await admin.database().ref().child("bubbles").push();
         await Promise.all([
+            admin.database().ref().child("users").child(result).child("matched").set(bubble.key),
             bubble.set({ users: [userId, result] }),
             lobbyDbRef.child(result).remove(),
             lobbyDbRef.child(userId).remove()
@@ -52,7 +53,7 @@ async function createBubble(userId: string, topics: string[]): Promise<string> {
         return bubble.key!;
     }
     else {
-        await utils.delay(10000);
+        await utils.delay(15000);
         await lobbyDbRef.child(userId).remove();
         return Promise.reject(new Error("Matching user is not found"));
     }
