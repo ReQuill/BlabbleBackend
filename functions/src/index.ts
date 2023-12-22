@@ -13,8 +13,8 @@ setGlobalOptions({
 });
 
 /**
- * Looks for matching users in the lobby and if succesful, pair them and return
- * the ID of the created bubble (chat room).
+ * Looks for matching users in the lobby and if succesful, pairs them and gives
+ * each the newly created bubble (chat room) ID.
  *
  * @param {string} userId
  * @param {number[]} topics
@@ -39,6 +39,7 @@ async function createBubble(userId: string, topics: number[]): Promise<void> {
   // Core matching logic ("the algorithm"), it just checks for the existence of
   // certain topic ID in an array of other user's preferred topics from all
   // available match offers
+  // TODO: could be better lol
   for (const matchOffer of utils.shuffleArray(pendingMatchOffers)) {
     logger.log(matchOffer.val());
     for (const topic of topics) {
